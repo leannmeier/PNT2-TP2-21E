@@ -10,8 +10,17 @@
 
 <body>
     <div class="container-fluid mt-3" id="app">
-        <input type="text" class="form-control" v-model="criterioDeBusqueda"
-            placeholder="Ingresar un criterio de busqueda...">
+        <input type="text" class="form-control" v-model="criterioDeBusquedaNombre"
+            placeholder="Busqueda por nombre completo">
+        <div v-if="getCantidadLetrasNombre() > 0 && getCantidadLetrasNombre() < 3">
+            <span style="color:red">Por favor. Ingrese al menos 3 caracteres para la busqueda por nombre</span>
+        </div>
+        <br>
+        <input type="text" class="form-control" v-model="criterioDeBusquedaDocumento" 
+            placeholder="Busqueda por dni">   
+            <div v-if="getCantidadNumerosDocumento() > 0 && getCantidadNumerosDocumento()< 3">
+                <span style="color:red">Por favor. Ingrese al menos 3 caracteres para la busqueda por nombre</span>
+            </div>
         <br>
         <div class="card-deck m-0">
             <div class="row">
@@ -34,8 +43,8 @@
         var app = createApp({
             data() {
                 return {
-                    criterioDeBusqueda: '',
-                    //Aquí, en este array es donde tienen que agregar su información
+                    criterioDeBusquedaNombre: '',
+                    criterioDeBusquedaDocumento: '',
                     personas: [
                         {
                             nombre: "Daniel",
@@ -56,29 +65,42 @@
                             dni: "87654321"
                         },
                         {
-                            nombre: "...",
-                            apellido: "...",
-                            correo: "...",
-                            dni: "..."
+                            nombre: "Leandro",
+                            apellido: "Meier",
+                            correo: "leandromeier56@gmail.com",
+                            dni: "42137135"
+                        },
+                        {
+                            nombre: "Cosme",
+                            apellido: "Fulanito",
+                            correo: "cosmefulanito99@gmail.com",
+                            dni: "41234556"
                         },
                     ]
                 }
             },
             computed: {
                 personasFiltradas() {
-                    return this.personas.filter((persona) => {
-                        let registroCompleto = `${persona.nombre} ${persona.apellido} ${persona.dni} ${persona.correo}`
-                        return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
+                    return this.personas.filter(persona => {
+                        let registroCompleto = `${persona.nombre} ${persona.apellido}`;
+                        let nombreCoincide = registroCompleto.toLowerCase().includes(this.criterioDeBusquedaNombre.toLowerCase());
+                        let documentoCoincide = persona.dni.toLowerCase().includes(this.criterioDeBusquedaDocumento.toLowerCase());
+                        return nombreCoincide && documentoCoincide;
                     });
                 }
             },
             methods: {
                 getNombreCompleto(persona) {
                     return `${persona.nombre} ${persona.apellido}`
+                },
+                getCantidadLetrasNombre(){
+                    return this.criterioDeBusquedaNombre.length;
+                },
+                getCantidadNumerosDocumento(){
+                    return this.criterioDeBusquedaDocumento.length;
                 }
             }
         }).mount('#app')
     </script>    
 </body>
 </html>
-
